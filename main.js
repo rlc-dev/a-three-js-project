@@ -1,5 +1,6 @@
 import "./style.css"
 import * as THREE from "three"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
 // Scene Setup
 
@@ -22,3 +23,62 @@ camera.position.setZ(30)
 camera.position.setX(-3)
 
 renderer.render(scene, camera)
+
+// Lights
+
+const pointLight = new THREE.PointLight(0xffffff)
+pointLight.position.set(5, 5, 5)
+
+const ambientLight = new THREE.AmbientLight(0xffffff)
+scene.add(pointLight, ambientLight)
+
+
+// Bg
+
+const spaceTexture = new THREE.TextureLoader().load(
+	"assets/digital-transformation.jpg"
+)
+scene.background = spaceTexture
+// Sphere
+
+const sphere1 = new THREE.TextureLoader().load("assets/19333449.jpg")
+
+const sp1 = new THREE.Mesh(
+	new THREE.SphereGeometry(10, 32, 32),
+	new THREE.MeshStandardMaterial({
+		map: sphere1,
+	})
+)
+
+scene.add(sp1)
+
+sp1.position.z = 30
+sp1.position.setX(-20)
+
+// Scroll Animation
+
+function moveCamera() {
+	const t = document.body.getBoundingClientRect().top
+	sp1.rotation.x += 0.005
+	sp1.rotation.y += 0.005
+	sp1.rotation.z += 0.005
+
+	camera.position.z = t * -0.01
+	camera.position.x = t * -0.0002
+	camera.rotation.y = t * -0.0002
+}
+
+document.body.onscroll = moveCamera
+moveCamera()
+
+// Animation Loop
+
+function animate() {
+	requestAnimationFrame(animate)
+
+	sp1.rotation.x += 0.005
+
+	renderer.render(scene, camera)
+}
+
+animate()
